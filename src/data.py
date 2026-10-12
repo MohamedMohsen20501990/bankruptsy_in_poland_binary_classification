@@ -62,4 +62,4 @@ if __name__== "__main__":
     
     model_trainer = ModelTrainer()
     model_trainer.train_model(train_data=transformed_train_df, test_data=transformed_test_df, target="Class")
-    
+    print(model_trainer.report)
