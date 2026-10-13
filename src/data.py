@@ -28,7 +28,7 @@ class DataHandler:
     def read_csv_data(self, path:str):
         """Load a CSV file and validate required column types."""
         try:
-            df = pd.read_csv(path, low_memory=False)
+            df = pd.read_csv(path, low_memory=False,na_values=["?"])
             df[["Class","Year"]]=df[["Class","Year"]].astype("int")
             df = df.reset_index(drop=True)
             df.drop(columns=["id"], inplace=True)
@@ -47,6 +47,7 @@ class DataHandler:
             train_data, test_data = train_test_split(data_frame, test_size=0.2, random_state=42, stratify=data_frame["Class"])
             train_data.to_csv(self.data_config.train_data_path, index=False, header=True)
             test_data.to_csv(self.data_config.test_data_path, index=False, header=True)
+            return train_data, test_data
             
         except Exception:
             logger.exception("Error splitting and saving data")
@@ -55,11 +56,11 @@ class DataHandler:
 if __name__== "__main__":
     data_handler= DataHandler()
     df = data_handler.read_csv_data("./data/raw/Bankruptcy Master Dataset.csv")     
-    data_handler.save_and_split(df)
+    train_data, test_data = data_handler.save_and_split(df)
     
-    data_preprocessor = Preprocessor()
-    transformed_train_df, transformed_test_df, preprocessor_path =data_preprocessor.start_data_preprocessing(train_path=data_handler.data_config.train_data_path, test_path=data_handler.data_config.test_data_path)
+    # data_preprocessor = Preprocessor()
+    # transformed_train_df, transformed_test_df, preprocessor_path =data_preprocessor.start_data_preprocessing(train_path=data_handler.data_config.train_data_path, test_path=data_handler.data_config.test_data_path)
     
     model_trainer = ModelTrainer()
-    model_trainer.train_model(train_data=transformed_train_df, test_data=transformed_test_df, target="Class")
+    model_trainer.train_model(train_data=train_data, test_data=test_data, target="Class")
     print(model_trainer.report)

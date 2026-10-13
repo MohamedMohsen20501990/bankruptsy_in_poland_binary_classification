@@ -7,6 +7,7 @@ import pandas as pd
 from sklearn.pipeline import Pipeline
 from sklearn.compose import ColumnTransformer
 from sklearn.impute import SimpleImputer
+from imblearn.over_sampling import RandomOverSampler
 from sklearn.preprocessing import RobustScaler
 from dataclasses import dataclass
 from src.logging_config import logger
@@ -27,7 +28,7 @@ class Preprocessor:
         self.preprocessor_config = PreprocessorConfig()   
     
     @staticmethod   
-    def __build_preprocessor(numerical_features: list[str]) -> Pipeline:
+    def build_preprocessor(numerical_features: list[str]) -> ColumnTransformer:
         """Build the numerical imputation and scaling pipeline."""
         try:
             
@@ -60,17 +61,21 @@ class Preprocessor:
             X_test = test_set.drop(columns=[target])
             y_test= test_set[target]
             
-            preprocessor_obj = self.__build_preprocessor(numerical_features)
+            preprocessor_obj = self.build_preprocessor(numerical_features)
             
             transformed_train_data = preprocessor_obj.fit_transform(X_train)
             transformed_test_data = preprocessor_obj.transform(X_test)
             
             feature_names = preprocessor_obj.get_feature_names_out()
             
-            transformed_train_df = pd.DataFrame(transformed_train_data, columns=feature_names, index= X_train.index)
+            # sampler = RandomOverSampler(random_state=42)
+            
+            # sampled_train_data, y_train_sampled = sampler.fit_resample(transformed_train_data, y_train)
+            
+            transformed_train_df = pd.DataFrame(transformed_train_data, columns=feature_names)
             transformed_train_df[target] = y_train.values
             
-            transformed_test_df = pd.DataFrame(transformed_test_data, columns=feature_names, index=X_test.index)
+            transformed_test_df = pd.DataFrame(transformed_test_data, columns=feature_names)
             transformed_test_df[target] = y_test.values
             
             # saving the preprocessor_obj
