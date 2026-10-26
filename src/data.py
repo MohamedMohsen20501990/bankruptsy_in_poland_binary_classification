@@ -38,7 +38,7 @@ class DataHandler:
             logger.exception("Error reading data from %s", path)
             raise
         
-    def save_and_split(self, data_frame:pd.DataFrame):
+    def split_and_save(self, data_frame:pd.DataFrame):
         """Split the dataset and save training and test CSV files."""
 
         
@@ -56,7 +56,7 @@ class DataHandler:
 if __name__== "__main__":
     data_handler= DataHandler()
     df = data_handler.read_csv_data("./data/raw/Bankruptcy Master Dataset.csv")     
-    train_data, test_data = data_handler.save_and_split(df)
+    train_data, test_data = data_handler.split_and_save(df)
     
     # data_preprocessor = Preprocessor()
     # transformed_train_df, transformed_test_df, preprocessor_path =data_preprocessor.start_data_preprocessing(train_path=data_handler.data_config.train_data_path, test_path=data_handler.data_config.test_data_path)
