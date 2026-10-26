@@ -1,0 +1,60 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Virtual environments
+.venv/
+venv/
+env/
+.venv
+venv
+.streamlit
+__pycache__
+*.pyc
+.git
+.gitignore
+.env
+.DS_Store
+.pytest_cache
+.mypy_cache
+
+# Jupyter notebooks
+*.ipynb
+
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Git
+.git/
+.gitignore
+
+# IDE
+.vscode/
+.idea/
+
+# macOS
+.DS_Store
+
+# Python packaging
+*.egg-info/
+dist/
+build/
+
+# Logs
+*.log
+
+# Environment variables / secrets
+.env
+.env.*
+
+# Training data
+data/
+
+# Docker files
+docker-compose.yml
+.dockerignore
