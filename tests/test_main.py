@@ -186,8 +186,10 @@ def test_predict_passes_validated_input_to_pipeline(
 # Tests for unsupported routes
 # --------------------------------------------------
 
-def test_root_route_not_defined(client):
-    """Test that the root route returns 404 when not configured."""
+def test_root_route(client):
     response = client.get("/")
 
-    assert response.status_code == 404
+    assert response.status_code == 200
+    assert response.json() == {
+        "message": "welcome to bankruptsy in ploand api"
+    }
