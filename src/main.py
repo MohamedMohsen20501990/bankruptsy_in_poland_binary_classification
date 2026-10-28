@@ -2,11 +2,12 @@ import sys
 from pathlib import Path
 sys.path.append(str(Path(__file__).resolve().parent.parent))
 from src.inference import InferencePipeline
+from typing import Annotated
 from src.logging_config import logger
 from src.utils import load_obj
 from src.schemas import BankruptsyInput, DataOut
 from contextlib import asynccontextmanager
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, HTTPException, Request, Depends
 
 MODEL_PATH = (
     Path(__file__).resolve().parent.parent
@@ -24,14 +25,19 @@ async def lifespan(app: FastAPI):
     yield
     logger.info("Application shutting down")
 
+# To inject the pipeline     
+def get_inference_pipeline(request:Request):
+    return request.app.state.inference_pipeline
+        
+
 app= FastAPI(lifespan=lifespan)
 
 @app.post("/predict", response_model=DataOut)
-def predict(request:Request ,input_data: BankruptsyInput):
+def predict(input_data: BankruptsyInput, inference_pipeline:Annotated[InferencePipeline, Depends(get_inference_pipeline)]):
     try:
 
         # inference_pipeline = InferencePipeline(model_path="artifacts/model.pkl")
-        prediction = request.app.state.inference_pipeline.predict(input_data=input_data)
+        prediction = inference_pipeline.app.state.inference_pipeline.predict(input_data=input_data)
         return DataOut(
             success=True,
             prediction=int(prediction),
