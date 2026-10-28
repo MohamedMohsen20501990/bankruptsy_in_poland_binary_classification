@@ -58,3 +58,25 @@ jobs:
         run: echo "${{ steps.docker-build.outputs.digest }}"
 
 
+  deploy-to-ec2:
+    needs: build-and-publish
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to AWS EC2
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            docker pull ${{ secrets.DOCKER_USERNAME }}/bankruptsy-api:${{ github.sha }}
+
+            docker stop bankruptsy-api || true
+            docker rm bankruptsy-api || true
+
+            docker run -d \
+              --name bankruptsy-api \
+              --restart unless-stopped \
+              -p 8000:8000 \
+              ${{ secrets.DOCKER_USERNAME }}/bankruptsy-api:${{ github.sha }}
