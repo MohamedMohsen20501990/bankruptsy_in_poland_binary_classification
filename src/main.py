@@ -32,6 +32,10 @@ def get_inference_pipeline(request:Request):
 
 app= FastAPI(lifespan=lifespan)
 
+@app.get("/")
+def root():
+    return {"message": "welcome to bankruptsy in ploand api"}
+
 @app.post("/predict", response_model=DataOut)
 def predict(input_data: BankruptsyInput, inference_pipeline:Annotated[InferencePipeline, Depends(get_inference_pipeline)]):
     try:
