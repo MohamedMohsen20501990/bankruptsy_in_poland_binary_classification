@@ -46,7 +46,7 @@ jobs:
 
       - name: build and push Docker image
         id: docker-build
-        uses: docker/build-push-actio@v3  
+        uses: docker/build-push-action@v6  
         with:
           context: .
           push: true
