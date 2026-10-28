@@ -37,7 +37,7 @@ def predict(input_data: BankruptsyInput, inference_pipeline:Annotated[InferenceP
     try:
 
         # inference_pipeline = InferencePipeline(model_path="artifacts/model.pkl")
-        prediction = inference_pipeline.app.state.inference_pipeline.predict(input_data=input_data)
+        prediction = inference_pipeline.predict(input_data=input_data)
         return DataOut(
             success=True,
             prediction=int(prediction),
